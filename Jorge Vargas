@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Output file
+OUTPUT_FILE="system_info_output.txt"
+
+# Redirect output to the file
+exec > $OUTPUT_FILE 2>&1
+
+echo "================= System Information Report ================="
+echo
+
+# System Hostname
+echo "System Hostname:"
+hostname
+echo "------------------------------------------------------------"
+
+# Operating System
+echo "Operating System:"
+lsb_release -a 2>/dev/null || cat /etc/os-release
+echo "------------------------------------------------------------"
+
+# System Uptime
+echo "System Uptime:"
+uptime -p
+echo "------------------------------------------------------------"
+
+# Linux Kernel Version
+echo "Linux Kernel Version:"
+uname -r
+echo "------------------------------------------------------------"
+
+# General CPU Information
+echo "CPU Information:"
+lscpu | grep -E 'Model name|Architecture|CPU MHz|Socket|Thread|Core'
+echo "------------------------------------------------------------"
+
+# Memory Information
+echo "Memory Information (Available and Free):"
+free -h
+echo "------------------------------------------------------------"
+
+# Network Interfaces (IP and MAC Address)
+echo "Network Interfaces (IP and MAC Address):"
+ip -br addr show
+echo "------------------------------------------------------------"
+
+# Filesystem Utilization and Types
+echo "Filesystem Utilization and Filesystem Types:"
+df -hT
+echo "------------------------------------------------------------"
+
+# Last Five Error Log Entries (case-insensitive)
+echo "Last 5 'Error' Log Entries (case-insensitive):"
+journalctl -p 3 -n 5 2>/dev/null || grep -i "error" /var/log/syslog | tail -n 5
+echo "============================================================"
